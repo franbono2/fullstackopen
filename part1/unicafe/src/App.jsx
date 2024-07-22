@@ -5,20 +5,62 @@ const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
+  const [all, setAll] = useState(0)
+  const [average, setAverage] = useState(0)
+  const [positive, setPositive] = useState(0)
+
+  const handleGoodClick = () => {
+    const updatedGood = good + 1
+    const updatedAll = all + 1
+    setGood(updatedGood)
+    setAll(updatedAll)
+    calculatePositive(updatedGood, updatedAll)
+    calculateAverage(updatedGood, bad, updatedAll)
+  }
+
+  const handleNeutralClick = () => {
+    const updatedNeutral = neutral + 1
+    const updatedAll = all + 1
+    setNeutral(updatedNeutral)
+    setAll(updatedAll)
+    calculatePositive(good, updatedAll)
+    calculateAverage(good, bad, updatedAll)
+  }
+
+  const handleBadClick = () => {
+    const updatedBad = bad + 1
+    const updatedAll = all + 1
+    setBad(updatedBad)
+    setAll(updatedAll)
+    calculatePositive(good, updatedAll)
+    calculateAverage(good, updatedBad, updatedAll)
+  }
+
+  const calculateAverage = (good, bad, all) => {
+    setAverage((good - bad) / all)
+  }
+
+  const calculatePositive = (good, all) => {
+    setPositive((good / all) * 100)
+  }
 
   return (
     <div>
       <h1>Give Feedback</h1>
       <section>
-        <button onClick={() => {setGood(good + 1)}}>good</button>
-        <button onClick={() => {setNeutral(neutral + 1)}}>neutral</button>
-        <button onClick={() => {setBad(bad + 1)}}>bad</button>
+        <button onClick={handleGoodClick}>good</button>
+        <button onClick={handleNeutralClick}>neutral</button>
+        <button onClick={handleBadClick}>bad</button>
       </section>
+
       <h1>Statistics</h1>
       <section>
-        <p>good: {good}</p>
-        <p>neutral: {neutral}</p>
-        <p>bad: {bad}</p>
+        <p>Good: {good}</p>
+        <p>Neutral: {neutral}</p>
+        <p>Bad: {bad}</p>
+        <p>All: {all}</p>
+        <p>Average: {average}</p>
+        <p>Positive: {positive}%</p>
       </section>
     </div>
   )
