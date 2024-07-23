@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -55,6 +54,18 @@ const App = () => {
     return nameLowerCase.includes(filterLowerCase) 
   })
 
+  const handleDeleteButton = id => {
+    if (window.confirm(`Do you really want to delete?`)){
+      personService.deletePerson(id)
+      .then(deletedPerson => {
+        const personsCopy = persons.filter(person => {
+          return person.id !== deletedPerson.id
+        })
+        setPersons(personsCopy)
+      })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -68,7 +79,7 @@ const App = () => {
         onNumberChange={handleNumberChange}
       />
       <h3>Numbers</h3>
-      <Persons personsToShow={personsToShow}/>
+      <Persons personsToShow={personsToShow} onClick={handleDeleteButton} />
     </div>
   )
 }
