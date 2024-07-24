@@ -10,7 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -36,9 +37,19 @@ const App = () => {
           setPersons(newPersons)
           setNewName('')
           setNewNumber('')
-          setSuccessMessage(`Changed ${newPerson.name} number to ${newPerson.number}`)
+          setNotificationMessage(`Changed ${newPerson.name} number to ${newPerson.number}`)
+          setNotificationType('success')
           setTimeout(() => {
-            setSuccessMessage(null)
+            setNotificationMessage(null)
+            setNotificationType(null)
+          }, 5000)
+        })
+        .catch(error => {
+          setNotificationMessage(`Information of has already been removed`)
+          setNotificationType('error')
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setNotificationType(null)
           }, 5000)
         })
       }
@@ -53,9 +64,11 @@ const App = () => {
       setPersons(persons.concat(newPerson))
       setNewName('')
       setNewNumber('')
-      setSuccessMessage(`Added ${newPerson.name}`)
+      setNotificationMessage(`Added ${newPerson.name}`)
+      setNotificationType('success')
       setTimeout(() => {
-        setSuccessMessage(null)
+        setNotificationMessage(null)
+        setNotificationType(null)
       }, 5000)
     })
   }
@@ -86,9 +99,19 @@ const App = () => {
           return person.id !== deletedPerson.id
         })
         setPersons(personsCopy)
-        setSuccessMessage(`Deleted ${deletedPerson.name}`)
+        setNotificationMessage(`Deleted ${deletedPerson.name}`)
+        setNotificationType('success')
         setTimeout(() => {
-          setSuccessMessage(null)
+          setNotificationMessage(null)
+          setNotificationType(null)
+        }, 5000)
+      })
+      .catch(error => {
+        setNotificationMessage(`Information of has already been removed`)
+        setNotificationType('error')
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType(null)
         }, 5000)
       })
     }
@@ -98,7 +121,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter value={filter} onChange={handleFilterChange} />
-      <Notification message={successMessage} />
+      <Notification message={notificationMessage} type={notificationType} />
       <h3>Add a new</h3>
       <PersonForm
         onSubmit={addPerson}
