@@ -3,12 +3,14 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personService from './services/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
 
   useEffect(() => {
     personService.getAll()
@@ -34,20 +36,27 @@ const App = () => {
           setPersons(newPersons)
           setNewName('')
           setNewNumber('')
+          setSuccessMessage(`Changed ${newPerson.name} number to ${newPerson.number}`)
+          setTimeout(() => {
+            setSuccessMessage(null)
+          }, 5000)
         })
       }
       return
     }
     const newPerson = {
       name: newName,
-      number: newNumber,
-      id: `${persons.length + 1}`
+      number: newNumber
     }
     personService.create(newPerson)
     .then(newPerson => {
       setPersons(persons.concat(newPerson))
       setNewName('')
       setNewNumber('')
+      setSuccessMessage(`Added ${newPerson.name}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     })
   }
 
@@ -77,6 +86,10 @@ const App = () => {
           return person.id !== deletedPerson.id
         })
         setPersons(personsCopy)
+        setSuccessMessage(`Deleted ${deletedPerson.name}`)
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000)
       })
     }
   }
@@ -85,6 +98,7 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter value={filter} onChange={handleFilterChange} />
+      <Notification message={successMessage} />
       <h3>Add a new</h3>
       <PersonForm
         onSubmit={addPerson}
