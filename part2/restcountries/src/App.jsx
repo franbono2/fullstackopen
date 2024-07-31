@@ -6,9 +6,15 @@ import Country from './components/Country'
 const App = () => {
   const [countryNameFilter, setCountryNameFilter] = useState('')
   const [countries, setCountries] = useState([])
+  const [country, setCountry] = useState(null)
 
   const handleCountryChange = (e) => {
     setCountryNameFilter(e.target.value)
+    setCountry(null)
+  }
+
+  const handleOnShow = (country) => {
+    setCountry(country)
   }
 
   const countriesToShow = () => {
@@ -47,7 +53,11 @@ const App = () => {
       }
       {
         (countriesToShow().length > 1 && countriesToShow().length <= 10) &&
-        <CountriesList countries={countriesToShow()}/>
+        <CountriesList countries={countriesToShow()} onShow={handleOnShow}/>
+      }
+      {
+        (countriesToShow().length > 1 && countriesToShow().length <= 10 && country !== null) &&
+        <Country country={country} />
       }
       {
         (countriesToShow().length === 1) &&
