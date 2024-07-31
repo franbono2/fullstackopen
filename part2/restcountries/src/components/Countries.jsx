@@ -1,11 +1,10 @@
 const CountriesList = ({ countries }) => {
 
-  console.log(countries)
   return (
     <div>
       {
         countries.map(country => 
-          <p>{country.name.common}</p>
+          <p key={country.name.common}>{country.name.common}</p>
         )
       }
     </div>

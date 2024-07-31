@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import Countries from './services/Countries'
 import CountriesList from './components/Countries'
+import Country from './components/Country'
 
 const App = () => {
   const [countryNameFilter, setCountryNameFilter] = useState('')
@@ -47,6 +48,10 @@ const App = () => {
       {
         (countriesToShow().length > 1 && countriesToShow().length <= 10) &&
         <CountriesList countries={countriesToShow()}/>
+      }
+      {
+        (countriesToShow().length === 1) &&
+        <Country country={countriesToShow()[0]}/>
       }
     </div>
   )
