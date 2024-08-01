@@ -94,10 +94,11 @@ const App = () => {
   const handleDeleteButton = id => {
     if (window.confirm(`Do you really want to delete?`)){
       personService.deletePerson(id)
-      .then(deletedPerson => {
+      .then(res => {
         const personsCopy = persons.filter(person => {
-          return person.id !== deletedPerson.id
+          return person.id !== id
         })
+        const deletedPerson = persons.find(person => person.id === id)
         setPersons(personsCopy)
         setNotificationMessage(`Deleted ${deletedPerson.name}`)
         setNotificationType('success')

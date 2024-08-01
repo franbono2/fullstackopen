@@ -1,10 +1,12 @@
 const express = require('express')
 const morgan = require('morgan')
+const cors = require('cors')
 const app = express()
 
 morgan.token('person', function (req, res) { return JSON.stringify(res.req.body)})
 
 app.use(express.json())
+app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :person'))
 
 let persons = [
@@ -98,6 +100,28 @@ const generateId = () => {
   const maxId = persons.length > 0 ? Math.max(...persons.map(person => person.id)) : 0
   return maxId + 1
 }
+
+app.put('/api/persons/:id', (req, res) => {
+  const id = Number(req.params.id)
+  const body = req.body
+
+  if (!body.name) {
+    return res.status(400).send('Body missing')
+  }
+  if (!body.number) {
+    return res.status(400).send('Number missing')
+  }
+
+  persons = persons.map(person => {
+    if (person.id === id){
+      return {...person, number: body.number}
+    }
+    return person
+  })
+  
+  const person = persons.find(person => person.id === id)
+  res.json(person)
+})
 
 const PORT = 3001
 app.listen(PORT, () => {
