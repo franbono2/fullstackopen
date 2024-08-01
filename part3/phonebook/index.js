@@ -66,8 +66,14 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
-  if (!body.name || !body.number) {
-    return res.status(400).send('Content missing')
+  if (!body.name) {
+    return res.status(400).send('Body missing')
+  }
+  if (nameExist(body.name)) {
+    return res.status(400).send('Name must be unique')
+  }
+  if (!body.number) {
+    return res.status(400).send('Number missing')
   }
 
   const person = {
@@ -79,6 +85,10 @@ app.post('/api/persons', (req, res) => {
   persons = persons.concat(person)
   res.json(person)
 })
+
+const nameExist = (name) => {
+  return persons.some(person => person.name === name)
+}
 
 const generateId = () => {
   const maxId = persons.length > 0 ? Math.max(...persons.map(person => person.id)) : 0
