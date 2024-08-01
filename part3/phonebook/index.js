@@ -50,8 +50,7 @@ app.get('/api/persons/:id', (req, res) => {
   const person = persons.find(person => person.id === id)
 
   if (!person) {
-    res.status(404).send('Not found any person with the current id')
-    return
+    return res.status(404).send('Not found any person with the current id')
   }
 
   res.json(person)
@@ -63,6 +62,28 @@ app.delete('/api/persons/:id', (req, res) => {
 
   res.status(204).send()
 })
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+
+  if (!body.name || !body.number) {
+    return res.status(400).send('Content missing')
+  }
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number
+  }
+
+  persons = persons.concat(person)
+  res.json(person)
+})
+
+const generateId = () => {
+  const maxId = persons.length > 0 ? Math.max(...persons.map(person => person.id)) : 0
+  return maxId + 1
+}
 
 const PORT = 3001
 app.listen(PORT, () => {
