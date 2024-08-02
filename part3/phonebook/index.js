@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
@@ -31,20 +32,20 @@ app.get('/api/persons', (req, res, next) => {
   Person.find({}).then(result => {
     res.json(result)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   Person.findById(id)
-  .then(person => {
-    if (person) {
-      res.json(person)
-    } else {
-      res.status(404).send()
-    }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if (person) {
+        res.json(person)
+      } else {
+        res.status(404).send()
+      }
+    })
+    .catch(error => next(error))
 
   // if (!person) {
   //   return res.status(404).send('Not found any person with the current id')
@@ -53,10 +54,10 @@ app.get('/api/persons/:id', (req, res, next) => {
 
 app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
-  Person.findByIdAndDelete(id).then(result => {
+  Person.findByIdAndDelete(id).then(() => {
     res.status(204).send()
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', async (req, res, next) => {
@@ -70,18 +71,18 @@ app.post('/api/persons', async (req, res, next) => {
   person.save().then(result => {
     res.json(result)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
   const body = req.body
 
-  Person.findByIdAndUpdate(id, {number: body.number, new: true, runValidators: true, context: 'query'} )
-  .then(result => {
-    res.json(result)
-  })
-  .catch(error => next(error))
+  Person.findByIdAndUpdate(id, { number: body.number, new: true, runValidators: true, context: 'query' } )
+    .then(result => {
+      res.json(result)
+    })
+    .catch(error => next(error))
 })
 
 const errorHandler = (error, req, res, next) => {
