@@ -45,6 +45,7 @@ const App = () => {
           }, 5000)
         })
         .catch(error => {
+          console.log(error.response.data.error)
           setNotificationMessage(`Information of has already been removed`)
           setNotificationType('error')
           setTimeout(() => {
@@ -71,6 +72,15 @@ const App = () => {
         setNotificationType(null)
       }, 5000)
     })
+    .catch(error => {
+      setNotificationMessage(`Validation error`)
+      setNotificationType('error')
+      setTimeout(() => {
+        setNotificationMessage(null)
+        setNotificationType(null)
+      }, 5000)
+      console.log(error.response.data.error)
+    })  
   }
 
   const handleNameChange = (event) => {
@@ -86,9 +96,13 @@ const App = () => {
   }
 
   const personsToShow = persons.filter(person => {
-    const nameLowerCase = person.name.toLocaleLowerCase()
-    const filterLowerCase = filter.toLocaleLowerCase()
-    return nameLowerCase.includes(filterLowerCase) 
+    try {
+      const nameLowerCase = person.name.toLocaleLowerCase()
+      const filterLowerCase = filter.toLocaleLowerCase()
+      return nameLowerCase.includes(filterLowerCase) 
+    } catch (error) {
+
+    }
   })
 
   const handleDeleteButton = id => {
@@ -108,6 +122,7 @@ const App = () => {
         }, 5000)
       })
       .catch(error => {
+        console.log(error.response.data.error)
         setNotificationMessage(`Information of has already been removed`)
         setNotificationType('error')
         setTimeout(() => {
