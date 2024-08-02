@@ -30,14 +30,14 @@ const App = () => {
         .then(newPerson => {
           const newPersons = persons.map(person => {
             if (person.id === newPerson.id){
-              return {...person, number: newPerson.number}
+              return {...person, number: newNumber}
             }
             return person
           })
           setPersons(newPersons)
           setNewName('')
           setNewNumber('')
-          setNotificationMessage(`Changed ${newPerson.name} number to ${newPerson.number}`)
+          setNotificationMessage(`Changed ${newPerson.name} number to ${newNumber}`)
           setNotificationType('success')
           setTimeout(() => {
             setNotificationMessage(null)
