@@ -82,3 +82,22 @@ describe('total likes', () => {
     assert.strictEqual(res, 36)
   })
 })
+
+describe('favorite blog', () => {
+  test('list is empty', () => {
+    const res = listHelper.favoriteBlog(noBlogs)
+    assert.strictEqual(res, 0)
+  })
+
+  test('list with one blog', () => {
+    const res = listHelper.favoriteBlog(oneBlog)
+    const favoriteBlog = oneBlog.at(0)
+    assert.deepStrictEqual(res, favoriteBlog)
+  })
+
+  test('list with many blogs', () => {
+    const res = listHelper.favoriteBlog(manyBlogs)
+    const favoriteBlog = manyBlogs.at(2)
+    assert.deepStrictEqual(res, favoriteBlog)
+  })
+})
