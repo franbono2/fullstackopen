@@ -24,11 +24,7 @@ const initialBlogs = [
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  const blogsObjects = initialBlogs.map(blog => new Blog(blog))
-  const promiseArray = blogsObjects.map(blog => blog.save())
-
-  await Promise.all(promiseArray)
+  await Blog.insertMany(initialBlogs)
 })
 
 describe('Tests for api GET', () => {
@@ -135,6 +131,23 @@ describe('Test for api DELETE', () => {
 
     const titles = blogsAfterDelete.body.map(blog => blog.title)
     assert(!titles.includes(blogToDelete.title))
+  })
+})
+
+describe('Test for api PUT', () => {
+  test('UPDATE blog by id', async () => {
+    const blogsAtStart = await api.get('/api/blogs/')
+    const blogToUpdate = blogsAtStart.body[0]
+    blogToUpdate.likes = 10
+    await api.put(`/api/blogs/${blogToUpdate.id}/`)
+      .send(blogToUpdate)
+      .expect(200)
+
+    const blogsAfterUpdate = await api.get('/api/blogs/')
+    assert.strictEqual(blogsAfterUpdate.body.length, blogsAtStart.body.length)
+
+    const updatedBlog = blogsAfterUpdate.body.find(blog => blog.id === blogToUpdate.id)
+    assert.strictEqual(updatedBlog.likes, 10)
   })
 })
 
