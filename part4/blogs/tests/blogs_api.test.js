@@ -90,6 +90,34 @@ test('POST blog without likes contains 0 likes', async () => {
   assert(contents.includes(0))
 })
 
+test('POST invalid blog (no author) is not added', async () => {
+  const newBlog = {
+    title: "Escape from FullStack",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+  }
+
+  await api.post('/api/blogs/')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await api.get('/api/blogs/')
+  assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
+})
+
+test('POST invalid blog (no title) is not added', async () => {
+  const newBlog = {
+    author: "Pepe W. Navarro",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+  }
+
+  await api.post('/api/blogs/')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await api.get('/api/blogs/')
+  assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
