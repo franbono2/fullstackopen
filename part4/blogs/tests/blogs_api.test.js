@@ -9,14 +9,12 @@ const api = supertest(app)
 
 const initialBlogs = [
   {
-    id: "5a422a851b54a676234d17f7",
     title: "React patterns",
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
     likes: 7
   },
   {
-    id: "5a422aa71b54a676234d17f8",
     title: "Go To Statement Considered Harmful",
     author: "Edsger W. Dijkstra",
     url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
@@ -51,6 +49,26 @@ test('Check blogs id', async () => {
     const id = Object.keys(blog).find(prop => prop === 'id')
     assert.strictEqual(id, 'id')
   })
+})
+
+test('POST valid blog is added', async () => {
+  const newBlog = {
+    title: "Escape from FullStack",
+    author: "Pepe W. Navarro",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    likes: 12
+  }
+
+  await api.post('/api/blogs/')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await api.get('/api/blogs/')
+  assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length + 1)
+
+  const contents = blogsAtEnd.body.map(blog => blog.title)
+  assert(contents.includes("Escape from FullStack"))
 })
 
 after(async () => {
