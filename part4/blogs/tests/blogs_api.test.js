@@ -71,6 +71,25 @@ test('POST valid blog is added', async () => {
   assert(contents.includes("Escape from FullStack"))
 })
 
+test('POST blog without likes contains 0 likes', async () => {
+  const newBlog = {
+    title: "Escape from FullStack",
+    author: "Pepe W. Navarro",
+    url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+  }
+
+  await api.post('/api/blogs/')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await api.get('/api/blogs/')
+  assert.strictEqual(blogsAtEnd.body.length, initialBlogs.length + 1)
+
+  const contents = blogsAtEnd.body.map(blog => blog.likes)
+  assert(contents.includes(0))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
