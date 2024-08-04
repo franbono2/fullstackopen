@@ -45,6 +45,14 @@ test('GET all blogs', async () => {
   assert.strictEqual(res.body.length, initialBlogs.length)
 })
 
+test('Check blogs id', async () => {
+  const res = await api.get('/api/blogs/')
+  res.body.forEach(blog => {
+    const id = Object.keys(blog).find(prop => prop === 'id')
+    assert.strictEqual(id, 'id')
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
