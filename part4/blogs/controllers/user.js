@@ -5,6 +5,10 @@ const bcrypt = require('bcrypt')
 userRouter.post('/', async (request, response) => {
   const { username, password, name } = request.body
 
+  if (password.length < 3) {
+    return response.status(400).send('The password is too short')
+  }
+
   const saltRounds = 10
   const passwordHash = await bcrypt.hash(password, saltRounds)
 
