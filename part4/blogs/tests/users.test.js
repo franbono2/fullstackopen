@@ -68,7 +68,6 @@ describe('User creation tests', () => {
       .send(newInvalidUser)
       .expect(400)
     
-    console.log(result.body.error)
     assert(result.body.error.includes('is shorter than the minimum allowed length'))
   })
 })
