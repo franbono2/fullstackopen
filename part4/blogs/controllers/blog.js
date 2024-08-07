@@ -13,8 +13,7 @@ blogRouter.get('/', (_request, response) => {
 
 blogRouter.post('/', async (request, response) => {
   const body = request.body
-  const token = getTokenFrom(request)
-  const decodedToken = jwt.verify(token, config.SECRET)
+  const decodedToken = jwt.verify(request.token, config.SECRET)
 
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'invalid token' })
@@ -36,14 +35,6 @@ blogRouter.post('/', async (request, response) => {
 
   response.status(201).json(result)
 })
-
-const getTokenFrom = request => {
-  const auth = request.get('authorization')
-  if (auth && auth.startsWith('Bearer ')) {
-    return auth.replace('Bearer ', '')
-  }
-  return null
-}
 
 blogRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
