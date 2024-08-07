@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import userService from './services/users'
 
@@ -11,6 +12,7 @@ const App = () => {
   const [title, setTitle] = useState('') 
   const [author, setAuthor] = useState('') 
   const [url, setUrl] = useState('') 
+  const [message, setMessage] = useState('') 
   
   useEffect(() => {
     fetchBlogs()
@@ -65,6 +67,10 @@ const App = () => {
       blogService.setToken(loggedUser.token)
     } catch (error) {
       console.error(error)
+      setMessage('wrong username or password')
+      setTimeout(() => {
+        setMessage('')
+      }, 3000)
     }
   }
 
@@ -123,6 +129,10 @@ const App = () => {
     try {
       const newBlog = await blogService.addBlog({ title, author, url })
       setBlogs([...blogs, newBlog])
+      setMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`)
+      setTimeout(() => {
+        setMessage('')
+      }, 3000)
       setTitle('')
       setAuthor('')
       setUrl('')
@@ -139,10 +149,10 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={message} />
       {
         user === null ? loginForm() : blogsList()
       }
-      
     </div>
   )
 }
