@@ -58,7 +58,7 @@ const App = () => {
       <Togglable buttonLabel='new Blog' ref={BlogFormRef}>
         <BlogForm addBlog={addBlog}/>
       </Togglable>
-      <BlogList blogs={blogs}/>
+      <BlogList blogs={blogs} updateLikes={updateLikes}/>
       <br />
       <footer>
         <button onClick={handleLogout}>logout</button>
@@ -74,7 +74,22 @@ const App = () => {
       setBlogs([...blogs, newBlog])
     } catch (error) {
       console.error(error)
-      showMessage('An error has occurred')
+      showMessage('An error adding a new blog has occurred')
+    }
+  }
+
+  const updateLikes = async (blog) => {
+    try {
+      const updatedBlog = await blogService.updateBlog(blog)
+      showMessage(`blog ${updatedBlog.title} has one more like`)
+      const updatedBlogList = blogs.map(blog => {
+        if (blog.id === updatedBlog.id) return updatedBlog
+        return blog
+      })
+      setBlogs(updatedBlogList)
+    } catch (error) {
+      console.error(error)
+      showMessage('An error updating likes has occurred')
     }
   }
 
