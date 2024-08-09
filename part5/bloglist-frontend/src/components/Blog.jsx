@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, updateLikes }) => {
+const Blog = ({ blog, updateLikes, deleteBlog }) => {
   const [showDetails, setShowDetails] = useState(false)
   const [buttonText, setButtonText] = useState('view')
   const blogStyle = {
@@ -22,6 +22,20 @@ const Blog = ({ blog, updateLikes }) => {
     updateLikes(updatedBlog)
   }
 
+  const isUserOwner = () => {
+    const loggedUserJson = window.localStorage.getItem('loggedUser')
+    if (!loggedUserJson) return false
+
+    const loggedUser = JSON.parse(loggedUserJson)
+    if (loggedUser.username !== blog.user.username) return false
+
+    return true 
+  }
+
+  const handleDelete = () => {
+    deleteBlog(blog.id)
+  }
+
   return (
     <div style={blogStyle}>
       {blog.title}
@@ -33,6 +47,9 @@ const Blog = ({ blog, updateLikes }) => {
           <button onClick={addLike}>like</button>
         </p>
         <p>{blog.author}</p>
+        {
+          isUserOwner() && <button onClick={handleDelete}>remove</button>
+        }
       </div>
     </div>  
   )

@@ -61,7 +61,11 @@ const App = () => {
       <Togglable buttonLabel='new Blog' ref={BlogFormRef}>
         <BlogForm addBlog={addBlog}/>
       </Togglable>
-      <BlogList blogs={blogsSortByLikes()} updateLikes={updateLikes}/>
+      <BlogList
+        blogs={blogsSortByLikes()}
+        updateLikes={updateLikes}
+        deleteBlog={deleteBlog}
+      />
       <br />
       <footer>
         <button onClick={handleLogout}>logout</button>
@@ -93,6 +97,23 @@ const App = () => {
     } catch (error) {
       console.error(error)
       showMessage('An error updating likes has occurred')
+    }
+  }
+
+  const deleteBlog = async (id) => {
+    const blogToDelete = blogs.find(blog => blog.id === id)
+    if (window.confirm(`Remove blog ${blogToDelete.title} by ${blogToDelete.author}`)){
+      try {
+        await blogService.deleteBlog(id)
+        const updatedBlogList = blogs.filter(blog => {
+          if (blog.id !== id) return blog 
+        })
+        showMessage(`The blog ${blogToDelete.title} has been deleted`)
+        setBlogs(updatedBlogList)
+      } catch (error) {
+        console.error(error)
+        showMessage('An error deleting a blog has occurred')
+      }
     }
   }
 
