@@ -50,6 +50,9 @@ const App = () => {
     }
   }
 
+  const blogsSortByLikes = () => blogs.sort((a, b) => b.likes - a.likes)
+  
+
   const blogsApp = () => (
     <div>
       <header>
@@ -58,7 +61,7 @@ const App = () => {
       <Togglable buttonLabel='new Blog' ref={BlogFormRef}>
         <BlogForm addBlog={addBlog}/>
       </Togglable>
-      <BlogList blogs={blogs} updateLikes={updateLikes}/>
+      <BlogList blogs={blogsSortByLikes()} updateLikes={updateLikes}/>
       <br />
       <footer>
         <button onClick={handleLogout}>logout</button>
