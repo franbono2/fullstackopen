@@ -37,16 +37,16 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title}
+      <p>{blog.author}</p>
       <button onClick={toggleShowDetails}>{buttonText}</button>
-      <div style={detailsVisible}>
+      <div style={detailsVisible} className="startHidden">
         <p>{blog.url}</p>
         <p>
           likes: {blog.likes}
           <button onClick={addLike}>like</button>
         </p>
-        <p>{blog.author}</p>
         {
           isUserOwner() && <button onClick={handleDelete}>remove</button>
         }
