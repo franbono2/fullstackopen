@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
@@ -15,9 +16,13 @@ const blog = {
 
 describe('Blogs tests <Blog />', () => {
   let container
+  let updateLikes
+  let deleteBlog
 
   beforeEach(() => {
-    container = render(<Blog blog={blog} />).container
+    updateLikes = jest.fn()
+    deleteBlog = jest.fn()
+    container = render(<Blog blog={blog} updateLikes={updateLikes} deleteBlog={deleteBlog} />).container
   })
 
   test('blog shows author and title at start', () => {
@@ -36,5 +41,13 @@ describe('Blogs tests <Blog />', () => {
 
     const hiddenDiv = container.querySelector('.startHidden')
     expect(hiddenDiv).not.toHaveStyle('display: none')
+  })
+
+  test('after clicking like button twice, 2 calls are made', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('like')
+    await user.dblClick(button)
+
+    expect(updateLikes).toHaveBeenCalledTimes(2)
   })
 })
