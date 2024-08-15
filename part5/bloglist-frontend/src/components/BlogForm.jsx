@@ -22,6 +22,7 @@ const BlogForm = ({ addBlog }) => {
       <div>
         title:
           <input
+          id='title'
           type="text"
           value={title}
           aria-label='title'
@@ -31,6 +32,7 @@ const BlogForm = ({ addBlog }) => {
       <div>
         author:
           <input
+          id='author'
           type="text"
           value={author}
           aria-label='author'
@@ -40,13 +42,14 @@ const BlogForm = ({ addBlog }) => {
       <div>
         url:
           <input
+          id='url'
           type="text"
           value={url}
           aria-label='url'
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">create</button>
+      <button id='create-note-button' type="submit">create</button>
     </form>  
   )
 

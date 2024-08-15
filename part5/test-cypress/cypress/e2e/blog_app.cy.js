@@ -8,31 +8,42 @@ describe('Blogs App', () => {
     cy.request('POST', `${Cypress.env('BACKEND')}/test/reset`)
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
     cy.visit('')
+    cy.contains('login').click()
   })
 
   it('login form is shown', () => {
-    cy.contains('login').click()
     cy.contains('username')
     cy.contains('password')
   })
 
   describe('Login', () => {
-    beforeEach(() => {
-      cy.contains('login').click()
-    })
 
     it('succeeds with correct credentials', () => {
-      cy.get('#username').type(user.username)
-      cy.get('#password').type(user.password)
-      cy.get('#login-button').click()
+      cy.login({ username: user.username, password: user.password })
       cy.contains(`Welcome: ${user.name}`)
     })
     
     it('fails with incorrect credentials', () => {
-      cy.get('#username').type('fail')
-      cy.get('#password').type('wrong')
-      cy.get('#login-button').click()
+      cy.login({ username: 'fail', password: 'wrong' })
       cy.contains('wrong username or password')
+    })
+  })
+
+  describe('When logged in', () => {
+    beforeEach(() => {
+      cy.login({ username: user.username, password: user.password })
+    })
+
+    it('A blog can be created', () => {
+      const title = 'Blog test'
+      const author = 'Cypress'
+      cy.createBlog({
+        title: title,
+        author: author,
+        url: '0.0.0.0'
+      })
+      cy.contains(title)
+      cy.contains(author)
     })
   })
 })
