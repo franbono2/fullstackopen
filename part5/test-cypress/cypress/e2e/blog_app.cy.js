@@ -42,8 +42,25 @@ describe('Blogs App', () => {
         author: author,
         url: '0.0.0.0'
       })
-      cy.contains(title)
-      cy.contains(author)
+      cy.get('.blog').contains(title)
+      cy.get('.blog').contains(author)
+    })
+
+    describe('When blog is created', () => {
+      const title = 'Blog test'
+      beforeEach(() => {
+        cy.createBlog({
+          title: title,
+          author: 'Cypress',
+          url: '0.0.0.0'
+        })
+      })
+
+      it('You can like a blog', () => {
+        cy.get('.blog').contains('view').click()
+        cy.get('#like-button').click()
+        cy.contains(`blog ${title} has one more like`)
+      })
     })
   })
 })
