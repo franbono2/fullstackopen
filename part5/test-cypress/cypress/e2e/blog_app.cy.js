@@ -53,7 +53,7 @@ describe('Blogs App', () => {
     })
 
     describe('When blog is created', () => {
-      const title = 'Blog test'
+      const title = 'Blog test with max likes'
       beforeEach(() => {
         cy.createBlog({
           title: title,
@@ -78,6 +78,17 @@ describe('Blogs App', () => {
         cy.contains('login').click()
         cy.login({ username: nonAccessUser.username, password: nonAccessUser.password })
         cy.contains('remove').should('not.exist')
+      })
+
+      it('Blogs are ordered by likes', () => {
+        cy.get('#like-button').click()
+        cy.createBlog({
+          title: 'Blog with 0 likes',
+          author: 'Cypress',
+          url: '0.0.0.0'
+        })
+        cy.get('.blog').eq(0).should('contain', 'Blog test with max likes')
+        cy.get('.blog').eq(1).should('contain', 'Blog with 0 likes')
       })
     })
   })

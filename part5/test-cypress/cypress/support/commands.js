@@ -6,9 +6,9 @@ Cypress.Commands.add('login', ({ username, password }) => {
 
 Cypress.Commands.add('createBlog', ({ title, author, url }) => {
   cy.contains('new Blog').click()
-      cy.get('#title').type(title)
-      cy.get('#author').type(author)
-      cy.get('#url').type(url)
-      cy.get('#create-note-button').click()
-      cy.visit('')
+  cy.get('#title').type(title)
+  cy.get('#author').type(author)
+  cy.get('#url').type(url)
+  cy.get('#create-note-button').click()
+  cy.visit('')
 })
