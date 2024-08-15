@@ -4,9 +4,15 @@ describe('Blogs App', () => {
     username: "test",
     password: "test"
   }
+  const nonAccessUser = {
+    name: "Bad user test",
+    username: "test2",
+    password: "test2"
+  }
   beforeEach(() => {
     cy.request('POST', `${Cypress.env('BACKEND')}/test/reset`)
     cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, nonAccessUser)
     cy.visit('')
     cy.contains('login').click()
   })
@@ -65,6 +71,13 @@ describe('Blogs App', () => {
       it('You can delete a blog', () => {
         cy.get('#remove-button').should('be.visible').click()
         cy.contains(`The blog ${title} has been deleted`)
+      })
+
+      it('Other user can not delete a blog', () => {
+        cy.contains('logout').click()
+        cy.contains('login').click()
+        cy.login({ username: nonAccessUser.username, password: nonAccessUser.password })
+        cy.contains('remove').should('not.exist')
       })
     })
   })
