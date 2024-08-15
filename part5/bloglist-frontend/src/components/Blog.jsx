@@ -48,7 +48,7 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
           <button id="like-button" onClick={addLike}>like</button>
         </p>
         {
-          isUserOwner() && <button onClick={handleDelete}>remove</button>
+          isUserOwner() && <button id="remove-button" onClick={handleDelete}>remove</button>
         }
       </div>
     </div>  

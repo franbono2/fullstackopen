@@ -54,12 +54,17 @@ describe('Blogs App', () => {
           author: 'Cypress',
           url: '0.0.0.0'
         })
+        cy.get('.blog').contains('view').click()
       })
 
       it('You can like a blog', () => {
-        cy.get('.blog').contains('view').click()
         cy.get('#like-button').click()
         cy.contains(`blog ${title} has one more like`)
+      })
+
+      it('You can delete a blog', () => {
+        cy.get('#remove-button').should('be.visible').click()
+        cy.contains(`The blog ${title} has been deleted`)
       })
     })
   })
