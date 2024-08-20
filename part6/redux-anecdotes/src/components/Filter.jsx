@@ -5,7 +5,7 @@ const Filter = () => {
   const dispatch = useDispatch()
 
   const handleChange = (event) => {
-    const inputField = event.target.value
+    const inputField = event.target.value.toLocaleLowerCase()
     dispatch(setFilter(inputField))
   }
   const style = {
