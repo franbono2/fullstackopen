@@ -39,6 +39,11 @@
       "id": "9f53",
       "content": "new note",
       "votes": 0
+    },
+    {
+      "id": "4f64",
+      "content": "thunk note",
+      "votes": 0
     }
   ]
 }
