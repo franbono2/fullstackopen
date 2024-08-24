@@ -12,7 +12,8 @@ const App = () => {
   const {data, isPending, isError} = useQuery({
     queryKey: ['anecdotes'],
     queryFn: getAnecdotes,
-    retry: 1 
+    retry: 1,
+    refetchOnWindowFocus: false 
   })
 
   if (isPending) {
