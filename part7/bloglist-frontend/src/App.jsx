@@ -7,17 +7,17 @@ import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
 import { notify } from "./reducers/notificationReducer";
+import { initializeBlogs, createBlog } from "./reducers/blogsReducer";
 import { useDispatch } from "react-redux";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
 
   const BlogFormRef = useRef();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetchBlogs();
+    dispatch(initializeBlogs());
   }, []);
 
   useEffect(() => {
@@ -28,11 +28,6 @@ const App = () => {
       blogService.setToken(loggedUser.token);
     }
   }, []);
-
-  const fetchBlogs = async () => {
-    const blogs = await blogService.getAll();
-    setBlogs(blogs);
-  };
 
   const loginForm = () => (
     <Togglable buttonLabel="login">
@@ -53,8 +48,6 @@ const App = () => {
     }
   };
 
-  const blogsSortByLikes = () => blogs.sort((a, b) => b.likes - a.likes);
-
   const blogsApp = () => (
     <div>
       <header>
@@ -63,11 +56,7 @@ const App = () => {
       <Togglable buttonLabel="new Blog" ref={BlogFormRef}>
         <BlogForm addBlog={addBlog} />
       </Togglable>
-      <BlogList
-        blogs={blogsSortByLikes()}
-        updateLikes={updateLikes}
-        deleteBlog={deleteBlog}
-      />
+      <BlogList updateLikes={updateLikes} deleteBlog={deleteBlog} />
       <br />
       <footer>
         <button onClick={handleLogout}>logout</button>
@@ -77,12 +66,9 @@ const App = () => {
 
   const addBlog = async (blog) => {
     try {
-      const newBlog = await blogService.addBlog(blog);
+      dispatch(createBlog(blog));
       BlogFormRef.current.toggleVisibility();
-      dispatch(
-        notify(`A new blog ${newBlog.title} by ${newBlog.author} added`, 5),
-      );
-      setBlogs([...blogs, newBlog]);
+      dispatch(notify(`A new blog ${blog.title} by ${blog.author} added`, 5));
     } catch (error) {
       console.error(error);
       dispatch(notify("An error adding a new blog has occurred", 5));
