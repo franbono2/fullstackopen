@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { updateBlogLikes, deleteBlog } from "../reducers/blogsReducer";
+import { notify } from "../reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 
-const Blog = ({ blog, updateLikes, deleteBlog }) => {
+const Blog = ({ blog }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [buttonText, setButtonText] = useState("view");
   const blogStyle = {
@@ -11,6 +14,7 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
     marginBottom: 5,
   };
   const detailsVisible = { display: showDetails ? "" : "none" };
+  const dispatch = useDispatch();
 
   const toggleShowDetails = () => {
     showDetails ? setButtonText("view") : setButtonText("hide");
@@ -18,8 +22,14 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
   };
 
   const addLike = () => {
-    const updatedBlog = { ...blog, likes: blog.likes + 1 };
-    updateLikes(updatedBlog);
+    try {
+      const updatedBlog = { ...blog, likes: blog.likes + 1 };
+      dispatch(updateBlogLikes(updatedBlog));
+      dispatch(notify(`blog ${updatedBlog.title} has one more like`, 5));
+    } catch (error) {
+      console.error(error);
+      dispatch(notify("An error updating likes has occurred", 5));
+    }
   };
 
   const isUserOwner = () => {
@@ -33,7 +43,15 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
   };
 
   const handleDelete = () => {
-    deleteBlog(blog.id);
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        dispatch(deleteBlog(blog.id));
+        dispatch(notify(`The blog ${blog.title} has been deleted`, 5));
+      } catch (error) {
+        console.error(error);
+        dispatch(notify("An error deleting a blog has occurred", 5));
+      }
+    }
   };
 
   return (

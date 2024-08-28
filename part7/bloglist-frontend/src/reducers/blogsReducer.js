@@ -1,6 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
 
+const blogListAfterUpdate = (state, action) => {
+  const updatedBlog = action.payload;
+  return state.map((blog) => (blog.id !== updatedBlog.id ? blog : updatedBlog));
+};
+
+const blogListAfterDelete = (state, action) => {
+  const id = action.payload;
+  return state.filter((blog) => blog.id !== id);
+};
+
 const blogsSlice = createSlice({
   name: "blogs",
   initialState: [],
@@ -10,6 +20,12 @@ const blogsSlice = createSlice({
     },
     addBlog: (state, action) => {
       state.push(action.payload);
+    },
+    updateBlog: (state, action) => {
+      return blogListAfterUpdate(state, action);
+    },
+    remove: (state, action) => {
+      return blogListAfterDelete(state, action);
     },
   },
 });
@@ -28,5 +44,19 @@ export const createBlog = (blog) => {
   };
 };
 
-export const { setBlogList, addBlog } = blogsSlice.actions;
+export const updateBlogLikes = (blog) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.updateBlog(blog);
+    dispatch(updateBlog(updatedBlog));
+  };
+};
+
+export const deleteBlog = (id) => {
+  return async (dispatch) => {
+    await blogService.deleteBlog(id);
+    dispatch(remove(id));
+  };
+};
+
+export const { setBlogList, addBlog, updateBlog, remove } = blogsSlice.actions;
 export default blogsSlice.reducer;

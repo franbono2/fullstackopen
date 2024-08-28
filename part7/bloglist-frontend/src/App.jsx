@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
@@ -56,7 +57,7 @@ const App = () => {
       <Togglable buttonLabel="new Blog" ref={BlogFormRef}>
         <BlogForm addBlog={addBlog} />
       </Togglable>
-      <BlogList updateLikes={updateLikes} deleteBlog={deleteBlog} />
+      <BlogList />
       <br />
       <footer>
         <button onClick={handleLogout}>logout</button>
@@ -72,42 +73,6 @@ const App = () => {
     } catch (error) {
       console.error(error);
       dispatch(notify("An error adding a new blog has occurred", 5));
-    }
-  };
-
-  const updateLikes = async (blog) => {
-    try {
-      const updatedBlog = await blogService.updateBlog(blog);
-      dispatch(notify(`blog ${updatedBlog.title} has one more like`, 5));
-      const updatedBlogList = blogs.map((blog) => {
-        if (blog.id === updatedBlog.id) return updatedBlog;
-        return blog;
-      });
-      setBlogs(updatedBlogList);
-    } catch (error) {
-      console.error(error);
-      dispatch(notify("An error updating likes has occurred", 5));
-    }
-  };
-
-  const deleteBlog = async (id) => {
-    const blogToDelete = blogs.find((blog) => blog.id === id);
-    if (
-      window.confirm(
-        `Remove blog ${blogToDelete.title} by ${blogToDelete.author}`,
-      )
-    ) {
-      try {
-        await blogService.deleteBlog(id);
-        const updatedBlogList = blogs.filter((blog) => {
-          if (blog.id !== id) return blog;
-        });
-        dispatch(notify(`The blog ${blogToDelete.title} has been deleted`, 5));
-        setBlogs(updatedBlogList);
-      } catch (error) {
-        console.error(error);
-        dispatch(notify("An error deleting a blog has occurred", 5));
-      }
     }
   };
 
