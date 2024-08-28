@@ -6,13 +6,15 @@ import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
+import { notify } from "./reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [message, setMessage] = useState("");
 
   const BlogFormRef = useRef();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchBlogs();
@@ -44,9 +46,10 @@ const App = () => {
       window.localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
       setUser(loggedUser);
       blogService.setToken(loggedUser.token);
+      dispatch(notify("log in succeed", 5));
     } catch (error) {
       console.error(error);
-      showMessage("wrong username or password");
+      dispatch(notify("wrong username or password", 5));
     }
   };
 
@@ -76,18 +79,20 @@ const App = () => {
     try {
       const newBlog = await blogService.addBlog(blog);
       BlogFormRef.current.toggleVisibility();
-      showMessage(`A new blog ${newBlog.title} by ${newBlog.author} added`);
+      dispatch(
+        notify(`A new blog ${newBlog.title} by ${newBlog.author} added`, 5),
+      );
       setBlogs([...blogs, newBlog]);
     } catch (error) {
       console.error(error);
-      showMessage("An error adding a new blog has occurred");
+      dispatch(notify("An error adding a new blog has occurred", 5));
     }
   };
 
   const updateLikes = async (blog) => {
     try {
       const updatedBlog = await blogService.updateBlog(blog);
-      showMessage(`blog ${updatedBlog.title} has one more like`);
+      dispatch(notify(`blog ${updatedBlog.title} has one more like`, 5));
       const updatedBlogList = blogs.map((blog) => {
         if (blog.id === updatedBlog.id) return updatedBlog;
         return blog;
@@ -95,7 +100,7 @@ const App = () => {
       setBlogs(updatedBlogList);
     } catch (error) {
       console.error(error);
-      showMessage("An error updating likes has occurred");
+      dispatch(notify("An error updating likes has occurred", 5));
     }
   };
 
@@ -111,20 +116,13 @@ const App = () => {
         const updatedBlogList = blogs.filter((blog) => {
           if (blog.id !== id) return blog;
         });
-        showMessage(`The blog ${blogToDelete.title} has been deleted`);
+        dispatch(notify(`The blog ${blogToDelete.title} has been deleted`, 5));
         setBlogs(updatedBlogList);
       } catch (error) {
         console.error(error);
-        showMessage("An error deleting a blog has occurred");
+        dispatch(notify("An error deleting a blog has occurred", 5));
       }
     }
-  };
-
-  const showMessage = (message) => {
-    setMessage(message);
-    setTimeout(() => {
-      setMessage("");
-    }, 3000);
   };
 
   const handleLogout = () => {
@@ -136,7 +134,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification message={message} />
+      <Notification />
       {user === null ? loginForm() : blogsApp()}
     </div>
   );
