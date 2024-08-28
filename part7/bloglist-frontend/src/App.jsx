@@ -1,21 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Notification from "./components/Notification";
-import blogService from "./services/blogs";
-import userService from "./services/users";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
 import { notify } from "./reducers/notificationReducer";
+import { setUser, clearUser } from "./reducers/userReducer";
 import { initializeBlogs, createBlog } from "./reducers/blogsReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const App = () => {
-  const [user, setUser] = useState(null);
-
   const BlogFormRef = useRef();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -24,30 +22,15 @@ const App = () => {
   useEffect(() => {
     const loggedUserJson = window.localStorage.getItem("loggedUser");
     if (loggedUserJson) {
-      const loggedUser = JSON.parse(loggedUserJson);
-      setUser(loggedUser);
-      blogService.setToken(loggedUser.token);
+      dispatch(setUser(loggedUserJson));
     }
   }, []);
 
   const loginForm = () => (
     <Togglable buttonLabel="login">
-      <LoginForm logUser={logUser} />
+      <LoginForm />
     </Togglable>
   );
-
-  const logUser = async (user) => {
-    try {
-      const loggedUser = await userService.loginUser(user);
-      window.localStorage.setItem("loggedUser", JSON.stringify(loggedUser));
-      setUser(loggedUser);
-      blogService.setToken(loggedUser.token);
-      dispatch(notify("log in succeed", 5));
-    } catch (error) {
-      console.error(error);
-      dispatch(notify("wrong username or password", 5));
-    }
-  };
 
   const blogsApp = () => (
     <div>
@@ -78,8 +61,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
-    setUser(null);
-    blogService.setToken(null);
+    dispatch(clearUser());
   };
 
   return (
