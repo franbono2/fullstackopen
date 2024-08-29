@@ -9,14 +9,18 @@ import { notify } from "./reducers/notificationReducer";
 import { setUser, clearUser } from "./reducers/userReducer";
 import { initializeBlogs, createBlog } from "./reducers/blogsReducer";
 import { useDispatch, useSelector } from "react-redux";
+import UserList from "./components/UserList";
+import { initializeUsers } from "./reducers/usersReducer";
+import { Link, Routes, Route } from "react-router-dom";
 
 const App = () => {
   const BlogFormRef = useRef();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-
+  //TODO: router /users
   useEffect(() => {
     dispatch(initializeBlogs());
+    dispatch(initializeUsers());
   }, []);
 
   useEffect(() => {
@@ -32,16 +36,21 @@ const App = () => {
     </Togglable>
   );
 
-  const blogsApp = () => (
+  const blogs = () => (
     <div>
-      <header>
-        <h3>Welcome: {user.name}</h3>
-      </header>
+      <hr />
       <Togglable buttonLabel="new Blog" ref={BlogFormRef}>
         <BlogForm addBlog={addBlog} />
       </Togglable>
       <BlogList />
-      <br />
+    </div>
+  );
+
+  const userInfo = () => (
+    <div>
+      <header>
+        <h3>Welcome: {user.name}</h3>
+      </header>
       <footer>
         <button onClick={handleLogout}>logout</button>
       </footer>
@@ -66,9 +75,23 @@ const App = () => {
 
   return (
     <div>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Blogs</Link>
+          </li>
+          <li>
+            <Link to="/users">Users</Link>
+          </li>
+        </ul>
+      </nav>
       <h1>Blogs</h1>
       <Notification />
-      {user === null ? loginForm() : blogsApp()}
+      {user === null ? loginForm() : userInfo()}
+      <Routes>
+        <Route path="/" element={blogs()} />
+        <Route path="/users" element={<UserList />} />
+      </Routes>
     </div>
   );
 };
