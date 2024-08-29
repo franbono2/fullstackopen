@@ -7,6 +7,7 @@ import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
 import UserList from "./components/UserList";
 import User from "./components/User";
+import Blog from "./components/Blog";
 import { notify } from "./reducers/notificationReducer";
 import { setUser, clearUser } from "./reducers/userReducer";
 import { initializeBlogs, createBlog } from "./reducers/blogsReducer";
@@ -19,8 +20,15 @@ const App = () => {
   const dispatch = useDispatch();
   const userLoggedIn = useSelector((state) => state.user);
   const users = useSelector((state) => state.users);
-  const match = useMatch("/users/:id");
-  const user = match ? users.find((user) => user.id === match.params.id) : null;
+  const userMatch = useMatch("/users/:id");
+  const user = userMatch
+    ? users.find((user) => user.id === userMatch.params.id)
+    : null;
+  const blogs = useSelector((state) => state.blogs);
+  const blogMatch = useMatch("/blogs/:id");
+  const blog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
+    : null;
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -40,7 +48,7 @@ const App = () => {
     </Togglable>
   );
 
-  const blogs = () => (
+  const blogsList = () => (
     <div>
       <hr />
       <Togglable buttonLabel="new Blog" ref={BlogFormRef}>
@@ -77,26 +85,37 @@ const App = () => {
     dispatch(clearUser());
   };
 
+  const navigation = () => (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/blogs">Blogs</Link>
+        </li>
+        <li>
+          <Link to="/users">Users</Link>
+        </li>
+      </ul>
+    </nav>
+  );
+
   return (
     <div>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Blogs</Link>
-          </li>
-          <li>
-            <Link to="/users">Users</Link>
-          </li>
-        </ul>
-      </nav>
-      <h1>Blogs</h1>
       <Notification />
-      {userLoggedIn === null ? loginForm() : userInfo()}
-      <Routes>
-        <Route path="/" element={blogs()} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/users/:id" element={<User user={user} />} />
-      </Routes>
+      <h1>Blogs</h1>
+      {userLoggedIn === null ? (
+        loginForm()
+      ) : (
+        <div>
+          {navigation()}
+          <Routes>
+            <Route path="/" element={userInfo()} />
+            <Route path="/blogs" element={blogsList()} />
+            <Route path="/users" element={<UserList />} />
+            <Route path="/users/:id" element={<User user={user} />} />
+            <Route path="/blogs/:id" element={<Blog blog={blog} />} />
+          </Routes>
+        </div>
+      )}
     </div>
   );
 };

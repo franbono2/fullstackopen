@@ -1,25 +1,12 @@
-import { useState } from "react";
 import { updateBlogLikes, deleteBlog } from "../reducers/blogsReducer";
 import { notify } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
 
 const Blog = ({ blog }) => {
-  const [showDetails, setShowDetails] = useState(false);
-  const [buttonText, setButtonText] = useState("view");
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-  const detailsVisible = { display: showDetails ? "" : "none" };
   const dispatch = useDispatch();
 
-  const toggleShowDetails = () => {
-    showDetails ? setButtonText("view") : setButtonText("hide");
-    setShowDetails(!showDetails);
-  };
+  if (!blog) return null;
+  console.log(blog);
 
   const addLike = () => {
     try {
@@ -54,25 +41,28 @@ const Blog = ({ blog }) => {
     }
   };
 
+  const marginLeft = {
+    marginLeft: 5,
+  };
+
   return (
-    <div style={blogStyle} className="blog">
-      {blog.title}
-      <p>{blog.author}</p>
-      <button onClick={toggleShowDetails}>{buttonText}</button>
-      <div style={detailsVisible} className="startHidden">
-        <p>{blog.url}</p>
-        <p>
-          likes: {blog.likes}
-          <button id="like-button" onClick={addLike}>
-            like
-          </button>
-        </p>
-        {isUserOwner() && (
-          <button id="remove-button" onClick={handleDelete}>
-            remove
-          </button>
-        )}
-      </div>
+    <div className="blog">
+      <h2>
+        {blog.title} by {blog.author}
+      </h2>
+      <a href={blog.url}>{blog.url}</a>
+      <p>
+        likes: {blog.likes}
+        <button style={marginLeft} id="like-button" onClick={addLike}>
+          like
+        </button>
+      </p>
+      <p>Added by {blog.user.name}</p>
+      {isUserOwner() && (
+        <button id="remove-button" onClick={handleDelete}>
+          remove
+        </button>
+      )}
     </div>
   );
 };

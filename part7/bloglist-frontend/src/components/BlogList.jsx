@@ -1,27 +1,30 @@
-import Blog from "./Blog";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-const BlogList = ({ updateLikes, deleteBlog }) => {
+const BlogList = () => {
   const sortByLikes = (blogs) => {
     return [...blogs].sort((a, b) => b.likes - a.likes);
   };
   const blogs = useSelector((state) => sortByLikes(state.blogs));
-  // eslint-disable-next-line no-unused-vars
-  const dispatch = useDispatch();
 
   const blogListStyle = {
     marginTop: 15,
   };
 
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5,
+  };
+
   return (
     <div style={blogListStyle}>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateLikes={updateLikes}
-          deleteBlog={deleteBlog}
-        />
+        <p style={blogStyle} key={blog.id}>
+          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+        </p>
       ))}
     </div>
   );
