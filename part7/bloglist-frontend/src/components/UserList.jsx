@@ -1,9 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 const UserList = () => {
   const users = useSelector((state) => state.users);
-  // eslint-disable-next-line no-unused-vars
-  const dispatch = useDispatch();
 
   const userListStyle = {
     marginTop: 15,
@@ -26,7 +25,9 @@ const UserList = () => {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link to={`/users/${user.id}`}>{user.name}</Link>
+              </td>
               <td style={tdStyle}>{user.blogs.length}</td>
             </tr>
           ))}
