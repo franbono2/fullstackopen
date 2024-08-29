@@ -58,17 +58,6 @@ const App = () => {
     </div>
   );
 
-  const userInfo = () => (
-    <div>
-      <header>
-        <h3>Welcome: {userLoggedIn.name}</h3>
-      </header>
-      <footer>
-        <button onClick={handleLogout}>logout</button>
-      </footer>
-    </div>
-  );
-
   const addBlog = async (blog) => {
     try {
       dispatch(createBlog(blog));
@@ -85,18 +74,26 @@ const App = () => {
     dispatch(clearUser());
   };
 
-  const navigation = () => (
+  const navStyle = {
+    padding: 5,
+  };
+
+  const navBar = () => (
     <nav>
-      <ul>
-        <li>
-          <Link to="/blogs">Blogs</Link>
-        </li>
-        <li>
-          <Link to="/users">Users</Link>
-        </li>
-      </ul>
+      <Link style={navStyle} to="/blogs">
+        Blogs
+      </Link>
+      <Link style={navStyle} to="/users">
+        Users
+      </Link>
+      <span style={navStyle}>{userLoggedIn.name} logged in</span>
+      <button style={navStyle} onClick={handleLogout}>
+        logout
+      </button>
     </nav>
   );
+
+  const EmptyComponent = () => null;
 
   return (
     <div>
@@ -106,9 +103,9 @@ const App = () => {
         loginForm()
       ) : (
         <div>
-          {navigation()}
+          {navBar()}
           <Routes>
-            <Route path="/" element={userInfo()} />
+            <Route path="/" element={<EmptyComponent />} />
             <Route path="/blogs" element={blogsList()} />
             <Route path="/users" element={<UserList />} />
             <Route path="/users/:id" element={<User user={user} />} />

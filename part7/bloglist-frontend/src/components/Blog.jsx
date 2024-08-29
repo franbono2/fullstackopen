@@ -6,7 +6,6 @@ const Blog = ({ blog }) => {
   const dispatch = useDispatch();
 
   if (!blog) return null;
-  console.log(blog);
 
   const addLike = () => {
     try {
