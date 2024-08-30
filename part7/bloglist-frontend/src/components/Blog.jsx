@@ -1,8 +1,14 @@
-import { updateBlogLikes, deleteBlog } from "../reducers/blogsReducer";
+import {
+  updateBlogLikes,
+  deleteBlog,
+  addComment,
+} from "../reducers/blogsReducer";
 import { notify } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 const Blog = ({ blog }) => {
+  const [comment, setComment] = useState("");
   const dispatch = useDispatch();
 
   if (!blog) return null;
@@ -40,6 +46,17 @@ const Blog = ({ blog }) => {
     }
   };
 
+  const handleAddComment = () => {
+    try {
+      dispatch(addComment(blog.id, { comment }));
+      dispatch(notify(`The comment ${comment} has been added`, 5));
+      setComment("");
+    } catch (error) {
+      console.error(error);
+      dispatch(notify("An error adding a comment has occurred", 5));
+    }
+  };
+
   const marginLeft = {
     marginLeft: 5,
   };
@@ -57,9 +74,17 @@ const Blog = ({ blog }) => {
         </button>
       </p>
       <p>Added by {blog.user.name}</p>
+      <h3>Comments</h3>
+      <input
+        type="text"
+        name="comment"
+        id="comment"
+        value={comment}
+        onChange={({ target }) => setComment(target.value)}
+      />
+      <button onClick={handleAddComment}>add comment</button>
       {blog.comments.length > 0 && (
         <div>
-          <h3>Comments</h3>
           <ul>
             {blog.comments.map((comment) => (
               <li key={comment}>{comment}</li>
@@ -67,6 +92,7 @@ const Blog = ({ blog }) => {
           </ul>
         </div>
       )}
+      <br />
       {isUserOwner() && (
         <button id="remove-button" onClick={handleDelete}>
           remove
