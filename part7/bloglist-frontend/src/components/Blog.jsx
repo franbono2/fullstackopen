@@ -57,6 +57,16 @@ const Blog = ({ blog }) => {
         </button>
       </p>
       <p>Added by {blog.user.name}</p>
+      {blog.comments.length > 0 && (
+        <div>
+          <h3>Comments</h3>
+          <ul>
+            {blog.comments.map((comment) => (
+              <li key={comment}>{comment}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       {isUserOwner() && (
         <button id="remove-button" onClick={handleDelete}>
           remove
