@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logUser } from "../reducers/userReducer";
 import { notify } from "../reducers/notificationReducer";
+import { Box, TextField, Button } from "@mui/material";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -25,32 +26,43 @@ const LoginForm = () => {
     setPassword("");
   };
 
+  const formStyle = {
+    marginTop: 8,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  };
+
+  const marginBottom = {
+    marginBottom: 10,
+  };
+
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          id="username"
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          id="password"
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button id="login-button" type="submit">
+    <Box component="form" style={formStyle} onSubmit={handleLogin}>
+      <TextField
+        id="username"
+        type="text"
+        value={username}
+        name="Username"
+        onChange={({ target }) => setUsername(target.value)}
+        variant="filled"
+        label="Username"
+        style={marginBottom}
+      />
+      <TextField
+        id="password"
+        type="password"
+        value={password}
+        name="Password"
+        onChange={({ target }) => setPassword(target.value)}
+        variant="filled"
+        label="Password"
+        style={marginBottom}
+      />
+      <Button variant="contained" id="login-button" type="submit">
         login
-      </button>
-    </form>
+      </Button>
+    </Box>
   );
 };
 

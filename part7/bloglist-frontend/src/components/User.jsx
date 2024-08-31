@@ -1,13 +1,26 @@
+import { Typography } from "@mui/material";
+
 const User = ({ user }) => {
   if (!user) return null;
 
   return (
     <div>
-      <h2>{user.name}</h2>
-      <h3>Added blogs:</h3>
+      <Typography
+        color="primary"
+        variant="h5"
+        component="h2"
+        style={{ marginTop: 10 }}
+      >
+        {user.name}
+      </Typography>
+      <Typography variant="h6" component="h3" style={{ marginTop: 10 }}>
+        Added blogs:
+      </Typography>
       <ul>
         {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
+          <Typography key={blog.id} variant="body2" component="li">
+            {blog.title}
+          </Typography>
         ))}
       </ul>
     </div>

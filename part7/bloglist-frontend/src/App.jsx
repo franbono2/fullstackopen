@@ -13,7 +13,15 @@ import { setUser, clearUser } from "./reducers/userReducer";
 import { initializeBlogs, createBlog } from "./reducers/blogsReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeUsers } from "./reducers/usersReducer";
-import { Link, Routes, Route, useMatch } from "react-router-dom";
+import { Link, Routes, Route, useMatch, useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 
 const App = () => {
   const BlogFormRef = useRef();
@@ -29,6 +37,7 @@ const App = () => {
   const blog = blogMatch
     ? blogs.find((blog) => blog.id === blogMatch.params.id)
     : null;
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -43,14 +52,16 @@ const App = () => {
   }, []);
 
   const loginForm = () => (
-    <Togglable buttonLabel="login">
-      <LoginForm />
-    </Togglable>
+    <div>
+      <h1>Blogs</h1>
+      <Togglable buttonLabel="login">
+        <LoginForm />
+      </Togglable>
+    </div>
   );
 
   const blogsList = () => (
-    <div>
-      <hr />
+    <div style={{ marginTop: 10 }}>
       <Togglable buttonLabel="new Blog" ref={BlogFormRef}>
         <BlogForm addBlog={addBlog} />
       </Togglable>
@@ -71,39 +82,44 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.removeItem("loggedUser");
+    navigate("/");
     dispatch(clearUser());
   };
 
-  const navStyle = {
-    padding: 5,
-  };
-
   const navBar = () => (
-    <nav>
-      <Link style={navStyle} to="/blogs">
-        Blogs
-      </Link>
-      <Link style={navStyle} to="/users">
-        Users
-      </Link>
-      <span style={navStyle}>{userLoggedIn.name} logged in</span>
-      <button style={navStyle} onClick={handleLogout}>
-        logout
-      </button>
-    </nav>
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          Blogs
+        </Typography>
+        <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1 }}>
+          {userLoggedIn.name} logged in
+        </Typography>
+        <Box>
+          <Button component={Link} color="inherit" to="/blogs">
+            Blogs
+          </Button>
+          <Button component={Link} color="inherit" to="/users">
+            Users
+          </Button>
+          <Button color="inherit" variant="outlined" onClick={handleLogout}>
+            logout
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 
   const EmptyComponent = () => null;
 
   return (
-    <div>
-      <Notification />
-      <h1>Blogs</h1>
+    <Container>
       {userLoggedIn === null ? (
         loginForm()
       ) : (
         <div>
           {navBar()}
+          <Notification />
           <Routes>
             <Route path="/" element={<EmptyComponent />} />
             <Route path="/blogs" element={blogsList()} />
@@ -113,7 +129,7 @@ const App = () => {
           </Routes>
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 

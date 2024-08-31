@@ -6,6 +6,7 @@ import {
 import { notify } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { Button, Link, TextField, Typography } from "@mui/material";
 
 const Blog = ({ blog }) => {
   const [comment, setComment] = useState("");
@@ -63,40 +64,69 @@ const Blog = ({ blog }) => {
 
   return (
     <div className="blog">
-      <h2>
+      <Typography variant="h5" component="h2" style={{ marginTop: 10 }}>
         {blog.title} by {blog.author}
-      </h2>
-      <a href={blog.url}>{blog.url}</a>
+      </Typography>
+      <Link style={{ marginTop: 8 }} href={blog.url}>
+        {blog.url}
+      </Link>
       <p>
-        likes: {blog.likes}
-        <button style={marginLeft} id="like-button" onClick={addLike}>
+        <Typography variant="body1" component="span">
+          likes: {blog.likes}
+        </Typography>
+        <Button
+          variant="outlined"
+          style={marginLeft}
+          id="like-button"
+          onClick={addLike}
+        >
           like
-        </button>
+        </Button>
       </p>
-      <p>Added by {blog.user.name}</p>
-      <h3>Comments</h3>
-      <input
+      <Typography variant="body1" component="p">
+        Added by {blog.user.name}
+      </Typography>
+      <Typography variant="h6" component="h3">
+        Comments
+      </Typography>
+      <TextField
+        style={{ marginRight: 5 }}
         type="text"
         name="comment"
         id="comment"
         value={comment}
+        variant="standard"
+        label="Comment"
         onChange={({ target }) => setComment(target.value)}
       />
-      <button onClick={handleAddComment}>add comment</button>
+      <Button
+        style={{ paddingTop: 10, marginTop: 8 }}
+        onClick={handleAddComment}
+        variant="outlined"
+      >
+        add comment
+      </Button>
       {blog.comments.length > 0 && (
         <div>
           <ul>
             {blog.comments.map((comment) => (
-              <li key={comment}>{comment}</li>
+              <Typography key={comment} variant="body2" component="li">
+                {comment}
+              </Typography>
             ))}
           </ul>
         </div>
       )}
       <br />
       {isUserOwner() && (
-        <button id="remove-button" onClick={handleDelete}>
+        <Button
+          style={{ marginTop: 10 }}
+          id="remove-button"
+          variant="contained"
+          onClick={handleDelete}
+        >
           remove
-        </button>
+        </Button>
       )}
     </div>
   );

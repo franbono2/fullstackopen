@@ -1,3 +1,4 @@
+import { List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -7,26 +8,20 @@ const BlogList = () => {
   };
   const blogs = useSelector((state) => sortByLikes(state.blogs));
 
-  const blogListStyle = {
-    marginTop: 15,
-  };
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   return (
-    <div style={blogListStyle}>
+    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
       {blogs.map((blog) => (
-        <p style={blogStyle} key={blog.id}>
-          <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-        </p>
+        <ListItem key={blog.id}>
+          <ListItemButton
+            component={Link}
+            color="inherit"
+            to={`/blogs/${blog.id}`}
+          >
+            <ListItemText>{blog.title}</ListItemText>
+          </ListItemButton>
+        </ListItem>
       ))}
-    </div>
+    </List>
   );
 };
 
