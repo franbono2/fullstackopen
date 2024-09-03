@@ -1,12 +1,15 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
-
+import Select from "react-select";
 import { ALL_AUTHORS, EDIT_BIRTHYEAR } from "../queries";
 
-const BirthForm = () => {
-  const [name, setName] = useState("");
+const BirthForm = (props) => {
+  const [selectedName, setSelectedName] = useState(null);
   const [born, setBorn] = useState("");
-
+  const options = props.authorNames.map((name) => {
+    return { value: name, label: name };
+  });
   const [changeBirth, result] = useMutation(EDIT_BIRTHYEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
@@ -21,9 +24,11 @@ const BirthForm = () => {
     event.preventDefault();
 
     const bornToInt = Number(born);
-    changeBirth({ variables: { name, setBornTo: bornToInt } });
+    changeBirth({
+      variables: { name: selectedName.value, setBornTo: bornToInt },
+    });
 
-    setName("");
+    setSelectedName(null);
     setBorn("");
   };
 
@@ -33,10 +38,10 @@ const BirthForm = () => {
 
       <form onSubmit={submit}>
         <div>
-          name{" "}
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
+          <Select
+            defaultValue={selectedName}
+            onChange={setSelectedName}
+            options={options}
           />
         </div>
         <div>
