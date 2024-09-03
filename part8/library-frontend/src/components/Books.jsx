@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 const Books = (props) => {
-  if (!props.show) {
-    return null
+  if (!props.show || !props.books) {
+    return null;
   }
 
-  const books = []
+  const books = props.books;
 
   return (
     <div>
@@ -26,7 +27,7 @@ const Books = (props) => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Books
+export default Books;
