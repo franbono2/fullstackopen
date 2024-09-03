@@ -1,3 +1,5 @@
+import BirthForm from "./BirthForm";
+
 /* eslint-disable react/prop-types */
 const Authors = (props) => {
   if (!props.show || !props.authors) {
@@ -24,6 +26,7 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+      <BirthForm />
     </div>
   );
 };
