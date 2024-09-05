@@ -1,5 +1,22 @@
 const { ApolloServer, gql } = require("apollo-server");
 const { v1: uuid } = require("uuid");
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+const Book = require("./models/book");
+const Author = require("./models/author");
+require("dotenv").config();
+const MONGODB_URI = process.env.MONGODB_URI;
+
+console.log("connecting to", MONGODB_URI);
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log("connected to MongoDB");
+  })
+  .catch((error) => {
+    console.log("error connection to MongoDB:", error.message);
+  });
 
 let authors = [
   {
@@ -90,7 +107,7 @@ const typeDefs = gql`
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: ID!
     genres: [String!]!
   }
@@ -115,27 +132,24 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (_root, args) => {
-      if (!args.author && !args.genre) return books;
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    allBooks: async (_root, args) => {
+      if (!args.author && !args.genre) return Book.find({});
       if (!args.genre) {
+        return Book.find({});
         return books.filter((b) => b.author === args.author);
       }
       if (!args.author) {
-        return books.filter((b) => b.genres.includes(args.genre));
+        return Book.find({ genres: { $all: [args.genre] } });
       }
       const booksByAuthor = books.filter((b) => b.author === args.author);
       return booksByAuthor.filter((b) => b.genres.includes(args.genre));
     },
-    allAuthors: () => authors,
+    allAuthors: async () => Author.find({}),
   },
   Author: {
-    bookCount: (root) =>
-      books.reduce((sum, book) => {
-        if (book.author === root.name) return sum + 1;
-        return sum;
-      }, 0),
+    bookCount: async (root) => Book.countDocuments({ author: root._id }),
   },
   Mutation: {
     addBook: (_root, args) => {
