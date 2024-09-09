@@ -66,3 +66,12 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const LOGGED_USER = gql`
+  query Query {
+    me {
+      username
+      favoriteGenre
+    }
+  }
+`;
