@@ -144,7 +144,7 @@ const resolvers = {
       }
       return book.populate("author", { name: 1, born: 1 });
     },
-    editAuthor: async (_root, args) => {
+    editAuthor: async (_root, args, context) => {
       const currentUser = context.currentUser;
       if (!currentUser) {
         throw new GraphQLError("not authenticated", {
@@ -202,11 +202,13 @@ startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null;
+    console.log(auth);
     if (auth && auth.startsWith("Bearer ")) {
       const decodedToken = jwt.verify(
         auth.substring(7),
         process.env.JWT_SECRET
       );
+      console.log(decodedToken);
       const currentUser = await User.findById(decodedToken.id);
       return { currentUser };
     }
