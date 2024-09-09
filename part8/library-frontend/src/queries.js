@@ -25,6 +25,21 @@ export const ALL_BOOKS = gql`
   }
 `;
 
+export const BOOKS_BY_GENRE = gql`
+  query Query($genre: String) {
+    allBooks(genre: $genre) {
+      title
+      author {
+        name
+        born
+        bookCount
+      }
+      published
+      genres
+    }
+  }
+`;
+
 export const CREATE_BOOK = gql`
   mutation Mutation(
     $title: String!
@@ -45,6 +60,7 @@ export const CREATE_BOOK = gql`
         bookCount
       }
       published
+      genres
     }
   }
 `;

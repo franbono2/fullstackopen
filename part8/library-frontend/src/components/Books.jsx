@@ -1,21 +1,22 @@
 /* eslint-disable react/prop-types */
+import { useQuery } from "@apollo/client";
 import { useState } from "react";
+import { BOOKS_BY_GENRE } from "../queries";
 
 const Books = (props) => {
-  const [filter, setFilter] = useState("none");
+  const [genre, setGenre] = useState(null);
+  const { loading, error, data } = useQuery(BOOKS_BY_GENRE, {
+    variables: { genre },
+  });
 
-  if (!props.show || !props.books) {
-    return null;
-  }
+  if (!props.show) return null;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error </p>;
 
-  const books = props.books;
-  const filteredBooks =
-    filter === "none"
-      ? books
-      : books.filter((book) => book.genres.includes(filter));
+  const books = data.allBooks;
   const genres = [
     ...new Set(
-      books
+      props.books
         .map((book) => book.genres)
         .flat()
         .map((genre) => genre.toLowerCase())
@@ -33,7 +34,7 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -43,11 +44,11 @@ const Books = (props) => {
         </tbody>
       </table>
       {genres.map((genre) => (
-        <button key={genre} onClick={() => setFilter(genre)}>
+        <button key={genre} onClick={() => setGenre(genre)}>
           {genre}
         </button>
       ))}
-      <button onClick={() => setFilter("none")}>all</button>
+      <button onClick={() => setGenre(null)}>all</button>
     </div>
   );
 };

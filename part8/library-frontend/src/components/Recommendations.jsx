@@ -1,19 +1,25 @@
 /* eslint-disable react/prop-types */
+import { useQuery } from "@apollo/client";
+import { LOGGED_USER } from "../queries";
 const Recommendations = (props) => {
-  if (!props.show || !props.books || !props.favoriteGenre) {
+  const userResult = useQuery(LOGGED_USER);
+
+  if (!props.show || !props.books) {
     return null;
   }
+  if (userResult.loading) return <div>loading...</div>;
 
+  const favoriteGenre = userResult.data.me.favoriteGenre;
   const books = props.books;
   const filteredBooks = books.filter((book) =>
-    book.genres.includes(props.favoriteGenre)
+    book.genres.includes(favoriteGenre)
   );
 
   return (
     <div>
       <h2>Recommendations</h2>
       <p>
-        books in your favorite genre <b>{props.favoriteGenre}</b>
+        books in your favorite genre <b>{favoriteGenre}</b>
       </p>
       <table>
         <tbody>

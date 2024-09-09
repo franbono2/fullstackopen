@@ -5,14 +5,13 @@ import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
 import { useApolloClient, useQuery } from "@apollo/client";
-import { ALL_AUTHORS, ALL_BOOKS, LOGGED_USER } from "./queries";
+import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
   const authorsResult = useQuery(ALL_AUTHORS);
   const booksResult = useQuery(ALL_BOOKS);
-  const userResult = useQuery(LOGGED_USER);
   const client = useApolloClient();
 
   const handleLogout = () => {
@@ -21,7 +20,7 @@ const App = () => {
     client.resetStore();
   };
 
-  if (authorsResult.loading || booksResult.loading || userResult.loading) {
+  if (authorsResult.loading || booksResult.loading) {
     return <div>loading...</div>;
   }
 
@@ -56,7 +55,6 @@ const App = () => {
       <Recommendations
         show={page === "recommend"}
         books={booksResult.data.allBooks}
-        favoriteGenre={userResult.data.me.favoriteGenre}
       />
     </div>
   );

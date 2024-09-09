@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
 import { useMutation } from "@apollo/client";
 import { useState } from "react";
-import { ALL_AUTHORS, ALL_BOOKS, CREATE_BOOK } from "../queries";
+import {
+  ALL_AUTHORS,
+  ALL_BOOKS,
+  BOOKS_BY_GENRE,
+  CREATE_BOOK,
+} from "../queries";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState("");
@@ -10,7 +15,22 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
   const [createBook] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    update: (cache, { data: { addBook } }) => {
+      const { allBooks } = cache.readQuery({
+        query: BOOKS_BY_GENRE,
+        variables: { genre: null },
+      });
+      cache.writeQuery({
+        query: BOOKS_BY_GENRE,
+        variables: { genre: null },
+        data: { allBooks: allBooks.concat([addBook]) },
+      });
+    },
+    refetchQueries: [
+      { query: ALL_BOOKS },
+      { query: ALL_AUTHORS },
+      { query: BOOKS_BY_GENRE },
+    ],
   });
 
   if (!props.show) {
