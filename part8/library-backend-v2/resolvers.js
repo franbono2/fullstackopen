@@ -39,9 +39,6 @@ const resolvers = {
       return context.currentUser;
     },
   },
-  Author: {
-    bookCount: async (root) => Book.countDocuments({ author: root._id }),
-  },
   Mutation: {
     addBook: async (_root, args, context) => {
       const currentUser = context.currentUser;
@@ -54,7 +51,7 @@ const resolvers = {
       }
       let author = await Author.findOne({ name: args.author });
       if (!author) {
-        const newAuthor = new Author({ name: args.author });
+        const newAuthor = new Author({ name: args.author, bookCount: 0 });
         try {
           await newAuthor.save();
         } catch (error) {
@@ -72,7 +69,9 @@ const resolvers = {
         genres: args.genres,
         published: args.published,
       });
+      author.bookCount = author.bookCount + 1;
       try {
+        await author.save();
         await book.save();
       } catch (error) {
         throw new GraphQLError(error.message, {

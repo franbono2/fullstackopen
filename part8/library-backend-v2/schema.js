@@ -3,7 +3,7 @@ const typeDefs = `
     name: String!
     id: ID!
     born: Int
-    bookCount: Int!
+    bookCount: Int
   }
 
   type Book {
