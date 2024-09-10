@@ -4,8 +4,28 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
-import { useApolloClient, useQuery } from "@apollo/client";
-import { ALL_AUTHORS, ALL_BOOKS } from "./queries";
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, BOOKS_BY_GENRE } from "./queries";
+
+export const updateCache = (cache, addedBook) => {
+  window.alert("Book added successfully");
+  const uniqByName = (b) => {
+    let seen = new Set();
+    return b.filter((book) => {
+      let title = book.title;
+      return seen.has(title) ? false : seen.add(title);
+    });
+  };
+  const { allBooks } = cache.readQuery({
+    query: BOOKS_BY_GENRE,
+    variables: { genre: null },
+  });
+  cache.writeQuery({
+    query: BOOKS_BY_GENRE,
+    variables: { genre: null },
+    data: { allBooks: uniqByName(allBooks.concat([addedBook])) },
+  });
+};
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -13,6 +33,13 @@ const App = () => {
   const authorsResult = useQuery(ALL_AUTHORS);
   const booksResult = useQuery(ALL_BOOKS);
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      updateCache(client.cache, addedBook);
+    },
+  });
 
   const handleLogout = () => {
     setToken(null);

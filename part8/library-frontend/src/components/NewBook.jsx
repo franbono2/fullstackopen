@@ -7,6 +7,7 @@ import {
   BOOKS_BY_GENRE,
   CREATE_BOOK,
 } from "../queries";
+import { updateCache } from "../App";
 
 const NewBook = (props) => {
   const [title, setTitle] = useState("");
@@ -16,15 +17,7 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([]);
   const [createBook] = useMutation(CREATE_BOOK, {
     update: (cache, { data: { addBook } }) => {
-      const { allBooks } = cache.readQuery({
-        query: BOOKS_BY_GENRE,
-        variables: { genre: null },
-      });
-      cache.writeQuery({
-        query: BOOKS_BY_GENRE,
-        variables: { genre: null },
-        data: { allBooks: allBooks.concat([addBook]) },
-      });
+      updateCache(cache, addBook);
     },
     refetchQueries: [
       { query: ALL_BOOKS },
