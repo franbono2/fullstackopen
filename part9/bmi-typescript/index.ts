@@ -18,8 +18,6 @@ app.get('/bmi', (req, res) => {
       errorMessage += ' Error: ' + error.message;
     }
     res.status(500).json({ error: errorMessage })
-  } finally {
-    return
   }
 });
 
