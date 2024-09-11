@@ -1,4 +1,9 @@
 
+interface BMIValues {
+  height: number,
+  weight: number
+}
+
 const calculateBMI = (height: number, weight: number) => {
   const height_M = height / 100
   const BMI = weight / (height_M * height_M)
@@ -8,4 +13,25 @@ const calculateBMI = (height: number, weight: number) => {
   if (BMI >= 30) return "Obesity (unhealthy weight)"
 }
 
-console.log(calculateBMI(180, 74))
+const parseArguments = (args: string[]): BMIValues => {
+  if (args.length < 4) throw new Error('Not enough arguments')
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))){
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3])
+    }
+  } else {
+    throw new Error('Povided values have to be numbers')
+  }
+}
+
+try {
+  const { height, weight } = parseArguments(process.argv)
+  console.log(calculateBMI(height, weight))
+} catch (error: unknown) {
+  let errorMessage = ''
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}

@@ -7,7 +7,13 @@ interface Result {
   target: number,
   average: number
 }
+
 type Rating = 1 | 2 | 3
+
+interface ExerciseValues {
+  target: number,
+  values: number[]
+}
 
 const calculateExercises = (exerciseHours: number[], target: number): Result => {
   const periodLength = exerciseHours.length
@@ -39,5 +45,25 @@ const calculateExercises = (exerciseHours: number[], target: number): Result => 
   }
 }
 
-const dailyExerciseHours = [3, 0, 2, 4.5, 0, 3, 1]
-console.log(calculateExercises(dailyExerciseHours, 2))
+const parseExerciseArguments = (args: string[]): ExerciseValues => {
+  if (args.length < 4) throw new Error('Not enough arguments')
+  const target = Number(args[2])
+  const strValues = args.slice(3)
+  const values = strValues.map(s => Number(s))
+  if (isNaN(target) || values.some(n => isNaN(n))) throw new Error('Provided values have to be numbers')
+  return {
+    target,
+    values
+  }
+}
+
+try {
+  const { target, values } = parseExerciseArguments(process.argv)
+  console.log(calculateExercises(values, target))
+} catch (error) {
+  let errorMessage = ''
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}
