@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FlightDiary } from "../types";
+import { FlightDiary, NewFlightDiary } from "../types";
 
 const baseUrl = 'http://localhost:3000/api/diaries'
 
@@ -8,8 +8,7 @@ export const getAllFlightDiaries = async () => {
   return response.data;
 }
 
-// export const createNote = (object: NewNote) => {
-//   return axios
-//     .post<Note>(baseUrl, object)
-//     .then(response => response.data)
-// }
+export const createFlightDiary = async (object: NewFlightDiary) => {
+  const response = await axios.post<FlightDiary>(baseUrl, object);
+  return response.data;
+}
