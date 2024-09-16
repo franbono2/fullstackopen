@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { NewFlightDiary } from "../types"
+import { NewFlightDiary, Visibility, Weather } from "../types"
 
 const DiaryForm = ({ addNewDiary } : { addNewDiary : (newDiary: NewFlightDiary) => void }) => {
   const [date, setDate] = useState('')
@@ -21,13 +21,52 @@ const DiaryForm = ({ addNewDiary } : { addNewDiary : (newDiary: NewFlightDiary) 
     setComment('')
   }
 
+  const handleVisibilityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setVisibility(event.target.value as Visibility)
+  }
+  const handleWeatherChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setWeather(event.target.value as Weather)
+  }
+
   return (
     <div>
       <h2>Add new entry</h2>
       <form onSubmit={handleSubmit}>
-        Date: <input value={date} onChange={(event) => setDate(event.target.value)} /> <br />
-        Visibility: <input value={visibility} onChange={(event) => setVisibility(event.target.value)} /> <br />
-        Weather: <input value={weather} onChange={(event) => setWeather(event.target.value)} /> <br />
+        Date: 
+        <input 
+          type="date"
+          name="flightDate"
+          id="flightDate"
+          value={date} 
+          onChange={(event) => setDate(event.target.value)} 
+        /> 
+        <br />
+        Visibility:
+        {Object.values(Visibility).map((vis) => (
+          <div key={vis}>
+            <input
+              type="radio"
+              id={vis}
+              name="visibility"
+              value={vis}
+              onChange={handleVisibilityChange}
+            />
+            <label htmlFor={vis}>{vis}</label>
+          </div>
+        ))}
+        Weather:
+        {Object.values(Weather).map((weather) => (
+          <div key={weather}>
+            <input
+              type="radio"
+              id={weather}
+              name="weather"
+              value={weather}
+              onChange={handleWeatherChange}
+            />
+            <label htmlFor={weather}>{weather}</label>
+          </div>
+        ))}
         Comment: <input value={comment} onChange={(event) => setComment(event.target.value)} /> <br />
         <button type='submit'>add</button>
       </form>
