@@ -9,6 +9,14 @@ export const getAllFlightDiaries = async () => {
 }
 
 export const createFlightDiary = async (object: NewFlightDiary) => {
-  const response = await axios.post<FlightDiary>(baseUrl, object);
-  return response.data;
+  try {
+    const response = await axios.post<FlightDiary>(baseUrl, object);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log(error.status)
+      console.error(error.response);
+      throw new Error(error.response?.data)
+    }
+  }
 }
