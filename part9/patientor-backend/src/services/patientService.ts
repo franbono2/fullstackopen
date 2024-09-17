@@ -28,9 +28,18 @@ const getNonSensitiveEntries = (): NonSensitivePatient[] => {
   }))
 }
 
+const getPatientById = (id: string): Patient => {
+  const patient = patients.find(patient => patient.id === id)
+  if (patient === undefined) {
+    throw new Error("Patient Not Found");
+  } 
+  return patient
+}
+
 export default {
   getEntries,
   getNonSensitiveEntries,
-  addEntry
+  addEntry,
+  getPatientById
 };
 
