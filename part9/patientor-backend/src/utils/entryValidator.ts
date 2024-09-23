@@ -215,7 +215,7 @@ const parseOccupation = (occupation: unknown): string => {
 
 const parseDate = (date: unknown): string => {
   if (!isString(date) || !isDate(date)) {
-    throw new Error("Incorrect dateOfBirth");
+    throw new Error("Incorrect date");
   }
   return date
 }
